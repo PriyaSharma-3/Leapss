@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  {% load static %}
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leave Management System</title>
+    <link rel="stylesheet" href="{% static 'assets/css/approvalStatus.css'%}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.2/font/bootstrap-icons.css">
+    <!-- Bootstrap core CSS     -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+
+
+</head>
+<body>
+
+    <header id="header" class="header fixed-top d-flex align-items-center" >
+                        <!-- <div class="d-flex align-items-center justify-content-between">
+                          <a href="index.html" class="logo d-flex align-items-center">
+                            <img src="{% static 'assets/img/Apcosys.png" alt="">
+                            <span class="d-none d-lg-block">Apcosys Private Limited</span>
+                          </a>
+                        </div>End Logo -->
+                        <i class="bi bi-list toggle-sidebar-btn"></i>
+
+                        <h3 class="greeting">Hi {{request.session.Username}}!</h3>
+                        <nav class="header-nav " style="padding-left: 60%;">
+                          <ul class="d-flex align-items-center">
+                            <li class="nav-item dropdown">
+                              <a class="nav-link nav-icon" href="#" data-bs-toggle="dropdown">
+                                <i class="bi bi-bell"></i>
+                                <span class="badge bg-primary badge-number">4</span>
+                              </a><!-- End Notification Icon -->
+                    
+                              <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow notifications">
+                                <li class="dropdown-header">
+                                  You have 4 new notifications
+                                  <a href="#"><span class="badge rounded-pill bg-primary p-2 ms-2">View all</span></a>
+                                </li>
+                                <li>
+                                  <hr class="dropdown-divider">
+                                </li>
+                    
+                                <li class="notification-item">
+                                  <i class="bi bi-exclamation-circle text-warning"></i>
+                                  <div>
+                                    <h4>Lorem Ipsum</h4>
+                                    <p>Quae dolorem earum veritatis oditseno</p>
+                                    <p>30 min. ago</p>
+                                  </div>
+                                </li>
+                    
+                                <li>
+                                  <hr class="dropdown-divider">
+                                </li>
+                    
+                                <li class="notification-item">
+                                  <i class="bi bi-x-circle text-danger"></i>
+                                  <div>
+                                    <h4>Atque rerum nesciunt</h4>
+                                    <p>Quae dolorem earum veritatis oditseno</p>
+                                    <p>1 hr. ago</p>
+                                  </div>
+                                </li>
+                    
+                                <li>
+                                  <hr class="dropdown-divider">
+                                </li>
+                    
+                                <li class="notification-item">
+                                  <i class="bi bi-check-circle text-success"></i>
+                                  <div>
+                                    <h4>Sit rerum fuga</h4>
+                                    <p>Quae dolorem earum veritatis oditseno</p>
+                                    <p>2 hrs. ago</p>
+                                  </div>
+                                </li>
+                    
+                                <li>
+                                  <hr class="dropdown-divider">
+                                </li>
+                    
+                                <li class="notification-item">
+                                  <i class="bi bi-info-circle text-primary"></i>
+                                  <div>
+                                    <h4>Dicta reprehenderit</h4>
+                                    <p>Quae dolorem earum veritatis oditseno</p>
+                                    <p>4 hrs. ago</p>
+                                  </div>
+                                </li>
+                    
+                                <li>
+                                  <hr class="dropdown-divider">
+                                </li>
+                                <li class="dropdown-footer">
+                                  <a href="#">Show all notifications</a>
+                                </li>
+                    
+                              </ul><!-- End Notification Dropdown Items -->
+                    
+                            </li><!-- End Notification Nav -->
+                            <li>
+                              <a type="button" href="/adminlogout" class="btn logout"><i class="bi bi-box-arrow-right"></i> Logout</a>
+                            </li>
+                          </ul>
+                        </nav><!-- End Icons Navigation -->
+                    
+    </header>
+    <aside id="sidebar" class="sidebar" >
+        <ul class="sidebar-nav " id="sidebar-nav">
+            <li class=" side align-items-left"data-bs-toggle="collapse">
+                <div class="logo d-flex align-items-center">
+                  <img src="{% static 'assets/img/Apcosys.png'%}" alt="">
+                  <span class="d-none d-lg-block">Apcosys Private Limited</span>
+                </div>
+              </li>
+            <li class="profile"data-bs-toggle="collapse">
+                <img src="{% static 'assets/img/user.png'%}" alt="" class="img-fluid rounded-circle">
+                <h6>{{request.session.Username}}</h6>
+            </li>
+            <li class="nav-menu" style="padding-top: 10%; "data-bs-toggle="collapse">
+                <ul id="components-nav" class="nav-content "data-bs-parent="#sidebar-nav"  >
+                  <li  ><a href="/adminDashboard"><span>Dashboard</span></a></li>
+                  <li class="active"><a href="/leaveApplicationDetails"> <span>Employee Leave Details</span></a></li>
+                  <li><a href="/employees"><span>Employee</span></a></li>
+        
+                </ul>
+            </li><!-- .nav-menu -->
+        </ul>
+    </aside>
+    <main id="main" class="main">
+        <section class="section container shadow p-3 mb-5 bg-white rounded dashboard" >
+            <h5 style="color: #009eff; padding: 2%;">Employee Leave Application</h5>
+            <div class="row details">
+                <div class="col-md-6">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="userDetails"style="padding-top: 7%;"><p>Name</p></div>
+                            <div class="userDetails"><p>EmployeeID</p></div>
+                            <div class="userDetails"><p>DOB</p></div>
+                            <div class="userDetails"><p>DOJ</p></div>
+                            <div class="userDetails"><p>E-mail</p></div>
+                            
+                        </div>
+                        <div class="col-md-6">
+                            <form>
+                              {% for employee in leaves %} 
+                                <div class="userDetails" style="margin-left: 2%;">
+                                    <p>{{ employee.Name}}</p>
+                                </div>
+                                <div class="userDetails"style="margin-left: 2%;">
+                                    <p>{{ employee.Emp_ID}}</p>
+                                </div>
+                                <div class="userDetails"style="margin-left: 2%;">
+                                    <p>{{ employee.D_O_B}}</p>
+                                </div>
+                                <div class="userDetails" style="margin-left: 2%;">
+                                    <p>{{ employee.Date_of_join}}</p>
+                                </div>
+                                <div class="userDetails"style="margin-left: 2%;">
+                                    <p>{{ employee.Email}}</p>
+                                </div>
+                                
+                                {% comment %} {% endfor %}   {% endcomment %}
+                               </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="userDetails"><p>Leave Type</p></div>
+                            <div class="userDetails"style="padding-top: 7%;"><p>Leave Duration (From)</p></div>
+                            <div class="userDetails"><p>Leave Duration (To)</p></div>
+                            <div class="userDetails"><p>Number Of Days</p></div>
+                            <div class="userDetails"><p></p></div>
+
+                        </div>
+                        <div class="col-md-6">
+                          {% comment %} {% for leave in leaves %}  {% endcomment %}
+
+                              <div class="userDetails"style="margin-left: 2%;">
+                                <p>{{ employee.Category}}</p>
+                            </div>
+                            
+                            <div class="userDetails" style="margin-left: 2%;">
+                                <p>{{ employee.From }}   ( {{ employee.leavedayCategory_From }} )</p>
+                            </div>
+                            <div class="userDetails"style="margin-left: 2%;">
+                                <p>{{ employee.to }}     ( {{ employee.leavedayCategory_to }}  )</p>
+                            </div>
+                            <div class="userDetails"style="margin-left: 2%;">
+                                <p>{{employee.Leave_count_Category}}</p>
+                            </div>
+                        </div>
+                    <div style="margin-left: 4%; padding-right:10%; text-align:justify;" class="userDetails"><p><span style="color: #009eff; align:justify">Reason: </span>{{ employee.Reason }}</p></div>
+
+                    </div>
+
+                    
+
+                </div>
+                <hr>
+                <form method="POST" action="/Reject_leave/{{employee.Emp_ID}}/{{employee.id}}">
+                  {% csrf_token %}
+                <div class="row">
+                  
+                    <div class="col-md-6">
+                        <textarea name="comments" id="comments" required maxlength="150" cols="30" rows="5" placeholder="Comments"></textarea>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="row">
+                          {% if employee.leave_status == 0 %}
+                            <div class="col-md-6">
+                                <center>
+                                    <div class="rejected justify-content-center" style="margin-top: 20%;">
+                                        <button type="submit" class="btn btn-primary btn-lg " href="/Reject_leave/{{employee.Emp_ID}}/{{employee.id}}">Reject</button>
+                                    </div>
+                                </center>
+                            </div>
+                            <div class="col-md-6">
+                              <center>
+                                  <div class="approve justify-content-center"style="margin-top: 20%;">
+                                      <a type="submit" class="btn btn-primary btn-lg " href="/Approve_leave/{{employee.Emp_ID}}/{{employee.id}}">Approve</a>
+                                    </div>
+                              </center>
+                          </div>
+                            {% elif employee.leave_status == 1  %}
+                            <div class="approve">
+                              <a type="button" class="btn btn-primary btn-lg" disabled="disabled" data-toggle="modal" data-target="#reply_modal">Approved</a>
+                            </div>  
+                            
+                            {% else %}
+
+                            <div class="reject">
+                              <a type="button" class="btn btn-primary btn-lg" disabled="disabled" data-toggle="modal" data-target="#reply_modal">Rejected</a>
+                          </div>
+    
+                            
+                            {% endif %}
+                        </div>
+                    </div>
+                  <form>
+                    
+                    
+                    {% endfor %}  
+                </div>
+            </div>
+          </section>
+      
+      
+        </main><!-- End #main -->
+        <script src="{% static 'assets/js/main.js'%}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
+    
+</body>
+</html>

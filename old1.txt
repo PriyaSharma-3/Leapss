@@ -1,0 +1,563 @@
+from django.shortcuts import render, redirect ,HttpResponse
+from django.contrib import messages
+from .models import Addemployee  
+from .forms import AddemployeeForm 
+from .models import Admin_Login  
+from .forms import Admin_LoginForm 
+from .models import Leave_App  
+from .forms import Leave_AppForm 
+from django.conf import settings
+from django.core.mail import send_mail
+from .filters import ConsumerFilter
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
+from datetime import datetime
+import os 
+from django.db import connection
+
+
+def homePage(request):
+    return render(request,"homePage.html")
+
+
+def adminLogin(request):   
+    if request.method == 'POST':
+        form = Admin_LoginForm(request.POST)  
+        Username = request.POST['Username']
+        Password = request.POST['Password']
+         
+        try:
+            salary = Admin_Login.objects.get(Username = Username,Password=Password)
+            request.session['Username'] = Username
+        except Admin_Login.DoesNotExist:
+            salary = None
+
+
+        if salary is not None:
+            return redirect('/adminDashboard')                                           
+        else:
+            messages.error(request,"Invalid Username or Password")
+            return render(request,"adminLogin.html")
+
+    return render(request,"adminLogin.html")
+
+def adminDashboard(request):
+    # Username = request.session['Username']
+    # print(Username)
+    if request.session.has_key('Username'):
+        if request.method == 'GET':
+            Username = request.session['Username']
+            admin_reg = Admin_Login.objects.get(Username=Username)
+            print(admin_reg)
+            
+            return render(request,'adminDashboard.html',{'admin_reg':admin_reg})   
+    return render(request,"adminDashboard.html")
+
+    
+def addEmployee(request):
+    if request.session.has_key('Username'):
+        if request.method == 'GET':
+            Username = request.session['Username']
+            admin_reg = Admin_Login.objects.get(Username=Username)
+            print(admin_reg)
+            
+            return render(request,'addEmployee.html',{'admin_reg':admin_reg})
+        
+        
+    if request.method == "POST":  
+        form = AddemployeeForm(request.POST,request.FILES)  
+        if form.is_valid():
+                Emp_ID = form.cleaned_data.get('Emp_ID')
+                Name = form.cleaned_data.get('Name')
+                User_name = form.cleaned_data.get('User_name')
+                Contact = form.cleaned_data.get('Contact')
+                Email = form.cleaned_data.get('Email')
+                Designation = form.cleaned_data.get('Designation')
+                D_O_B = form.cleaned_data.get('D_O_B')
+                Date_of_join = form.cleaned_data.get('Date_of_join')
+                Reporting_Dept = form.cleaned_data.get('Reporting_Dept')
+                Password = form.cleaned_data.get('Password')
+                Confirm_Password = form.cleaned_data.get('Confirm_Password')
+                Image = form.cleaned_data.get('Image')
+                Address = form.cleaned_data.get('Address')
+                department = form.cleaned_data.get('department')
+                subject ="Your Account has been created" 
+                send_mail(subject, f'User_name:{User_name}\n\nPassword :{Password}\n\n', 'settings.EMAIL_HOST_USER', [Email],fail_silently=False) 
+                # print(Emp_ID,Name,User_name,Contact,Email,Designation,D_O_B,Jate_of_join,Reporting_Dept,Password,Confirm_Password,Image)
+                
+                
+                
+                
+                form.save()
+                return redirect('/adminDashboard') 
+        
+    else:
+        form = AddemployeeForm()  
+    return render(request,'addEmployee.html',{'form':form})
+
+
+def edit(request): 
+       
+    employees = Addemployee.objects.all()  
+    paginator = Paginator(employees,5)
+
+    page = request.GET.get('page')
+    try:
+        employees = paginator.page(page)
+    except PageNotAnInteger:
+        employees = paginator.page(1)
+    except EmptyPage:
+        employees = paginator.page(paginator.num_pages)
+
+    return render(request, 'edit.html', {'employees': employees})
+    # return render(request,"show.html",{'employees':employees})  
+    # return render(request,"edit.html",{'employees':employees})
+
+def show_Emp_ID(request):
+        Emp_ID = request.POST['Emp_ID'] 
+        employee = Addemployee.objects.filter(Emp_ID=Emp_ID)
+        return render(request, 'edit.html',{'employees' : employee})
+   
+        
+
+def editEmployee(request,id):
+
+    employee = Addemployee.objects.get(id=id)  
+    return render(request,'editEmployee.html', {'employee':employee}) 
+    # return render(request,"editEmployee.html")
+
+def update(request, id):  
+   
+    employee = Addemployee.objects.get(id=id)  
+    if len(employee.Image) > 0:
+        os.remove(employee.Image.path)
+    form = AddemployeeForm(request.POST, instance = employee)  
+    if form.is_valid(): 
+        
+        form.save()  
+        return redirect("/edit")  
+    # else:
+        # print(form.errors) 
+    return render(request, 'editEmployee.html', {'employee': employee})  
+
+
+def employees(request):
+    if request.session.has_key('Username'):
+        if request.method == 'GET':
+            Username = request.session['Username']
+            admin_reg = Admin_Login.objects.get(Username=Username)
+            print(admin_reg)
+            
+            return render(request,'employees.html',{'admin_reg':admin_reg})
+        
+    return render(request,"employees.html")
+
+
+
+def leaveApplicationDetails(request):
+    if request.session.has_key('Username'):
+        if request.method == 'GET':
+            Username = request.session['Username']
+            Emp_ID = request.session['Emp_ID']
+                
+            leaves = Leave_App.objects.all()
+            print(leaves)
+            # query = "SELECT leave.Category,leave.From,leave.to,leave.leavedayCategory_From,leave.leavedayCategory_to,leave.Reason,leave.Emp_ID, Addemployee.Name,Addemployee.department FROM AddEmployees INNER JOIN Leave ON AddEmployees.Emp_ID = Leave.Emp_ID;"
+               
+            cursor = connection.cursor()    
+            cursor.execute("""SELECT "Category" as Category,"Name" as Name FROM leave FULL OUTER JOIN add_Employee ON leave.id = add_Employee.id""")
+            row = cursor.fetchone()
+            print(row)
+
+            return render(request,'leaveApplicationDetails.html',{'leaves':leaves,'Username':Username})
+        
+    return render(request,"leaveApplicationDetails.html")
+
+
+def removeEmployees(request):
+    employees = Addemployee.objects.all()  
+    paginator = Paginator(employees,5)
+
+    page = request.GET.get('page')
+    try:
+        employees = paginator.page(page)
+    except PageNotAnInteger:
+        employees = paginator.page(1)
+    except EmptyPage:
+        employees = paginator.page(paginator.num_pages)
+        
+    return render(request,"removeEmployees.html",{'employees':employees})
+
+def remove_Emp_ID(request):
+    Emp_ID = request.POST['Emp_ID']
+    employee = Addemployee.objects.filter(Emp_ID=Emp_ID)
+    return render(request, 'removeEmployees.html',{'employees' : employee})
+
+def destroy(request, id):
+          
+    employee = Addemployee.objects.get(id=id)  
+    if len(employee.Image) > 0:
+        os.remove(employee.Image.path)
+    employee.delete()  
+    return redirect("/removeEmployees") 
+
+
+
+def reviewLeaveApplication(request,id):
+    if request.session.has_key('Username'):
+        if request.method == 'GET':
+            Username = request.session['Username']
+            addemployee = Addemployee.objects.get(id=id)
+            leave = Leave_App.objects.get(id=id)
+            return render(request,'reviewLeaveApplication.html',{'leave':leave,'addemployee':addemployee})
+        
+    return render(request,"reviewLeaveApplication.html")
+
+
+
+
+def adminlogout(request):
+    try:
+      del request.session['Username']
+    except:
+      pass
+    return render(request,"adminLogin.html")
+
+
+#=============================================================================================
+
+
+
+
+
+
+
+
+def employeeLogin(request):
+    if request.method == 'POST':
+        form = AddemployeeForm(request.POST)  
+        User_name = request.POST['User_name']
+        Password = request.POST['Password']
+         
+        try:
+            emp = Addemployee.objects.get(User_name = User_name,Password=Password)
+            request.session['User_name'] = User_name
+            
+            for employee in Addemployee.objects.all().filter(User_name=User_name).values_list('id','Name','Emp_ID'):
+                request.session['id'] = employee[0]
+                request.session['Name'] = employee[1]
+                request.session['Emp_ID'] = employee[2]
+                
+                print(employee[0],employee[1],employee[2])
+
+        except Addemployee.DoesNotExist:
+            emp = None
+
+
+        if emp is not None:
+            return redirect('/sidebar')                                           
+        else:
+            messages.error(request,"Invalid Username or Password")
+            return render(request,"employeeLogin.html")
+
+    return render(request,"employeeLogin.html")
+
+
+def sidebar(request):   
+    Name = request.session['Name']
+    return render(request,"sidebar.html",{'Name':Name})
+
+def profileSetting(request):
+    if request.session.has_key('Name'):
+        if request.method == 'GET':
+            Name = request.session['Name']
+            emp_reg = Addemployee.objects.get(Name=Name)
+            print(emp_reg)
+            
+            return render(request,'profileSetting.html',{'emp_reg':emp_reg})        
+    return render(request,"profileSetting.html",{'Name':Name})
+
+
+def leaveSection(request):
+    Name = request.session['Name']
+    return render(request,"leaveSection.html",{'Name':Name})
+
+
+def leaveApplication(request):
+    Name = request.session['Name']
+            
+    if request.method == "POST": 
+        
+        form = Leave_AppForm(request.POST)  
+        print(form)
+        if form.is_valid():
+            Category = form.cleaned_data.get('Category')
+            From = form.cleaned_data.get('From')
+            to = form.cleaned_data.get('to')
+            leavedayCategory_From = form.cleaned_data.get('leavedayCategory_From')
+            leavedayCategory_to = form.cleaned_data.get('leavedayCategory_to')
+            Reason = form.cleaned_data.get('Reason')
+            Emp_ID = form.cleaned_data.get('Emp_ID')
+            
+            # From_date = str(From)
+            # From_date = datetime.strptime(From_date, '%Y-%m-%d')
+            # From_date = From_date.strftime("%d")
+            
+            # print(From_date)
+
+            # to_date = str(to)
+            # to_date = datetime.strptime(to_date, '%Y-%m-%d')
+            # to_date = to_date.strftime("%d")
+            
+            # print(to_date) 
+
+            # date = int(to_date) - int(From_date)
+            # print(date)
+        
+            
+            Leave_count_Category = form.cleaned_data.get('Leave_count_Category')
+            print(Leave_count_Category)
+            
+           
+            
+            try:  
+                form.save()  
+                return redirect('/approvalStatus')  
+                
+            except:  
+                print(form.errors)
+                pass  
+        
+    else:
+        
+        form = Leave_AppForm()  
+        
+    con ={
+        'form':form,
+        'Name':Name,
+
+        
+    }
+    return render(request,'leaveApplication.html',con)
+
+
+
+def leaveBasket(request):
+    Name = request.session['Name']
+    return render(request,"leaveBasket.html",{'Name':Name})
+    
+    
+def approvalStatus(request):
+    if request.session.has_key('Name'):
+        if request.method == 'GET':
+            Name = request.session['Name']
+            Emp_ID = request.session['Emp_ID']
+            for employee in Addemployee.objects.all().filter(Emp_ID=Emp_ID).values_list('department'):
+    
+                department = employee[0]
+                
+            leave = Leave_App.objects.filter(Emp_ID=Emp_ID).values()
+            print(leave)
+           
+            con = {
+                'leaves':leave,
+                'Name':Name,
+                'Emp_ID':Emp_ID,
+                'department':department,
+                
+            }
+            
+            return render(request,'approvalStatus.html',con)
+    
+    return render(request,'approvalStatus.html')
+ 
+    # if request.session.has_key('Name'):
+    #     if request.method == 'GET':
+    #         Name = request.session['Name']
+    #         Emp_ID = request.session['Emp_ID']
+    #         for employee in Addemployee.objects.all().filter(Emp_ID=Emp_ID).values_list('department'):
+    
+    #              department = employee[0]
+    #              print(department)
+    #         for leave in Leave_App.objects.all().filter(Emp_ID=Emp_ID).values_list('Category','From','to','leavedayCategory_From','leavedayCategory_to','Reason','Emp_ID','Leave_count_Category'):
+    #             From = leave[1]
+    #             to = leave[2]
+    #             print(From,to)
+    #             print(leave)
+    #         # leave = Leave_App.objects.get(Emp_ID=Emp_ID)
+    #         # print(leave)
+    #         From_date = str(From)
+    #         From_date = datetime.strptime(From_date, '%Y-%m-%d')
+    #         From_date = From_date.strftime("%d")
+            
+    #         # # print(From_date)
+
+    #         to_date = str(to)
+    #         to_date = datetime.strptime(to_date, '%Y-%m-%d')
+    #         to_date = to_date.strftime("%d")
+            
+    #         # # print(to_date) 
+
+    #         date = int(to_date) - int(From_date)
+    #         # print(date)
+        
+    #         con = {
+    #             'leave':leave,
+    #             'Name':Name,                            
+    #             'From' : From,
+    #             'Emp_ID':Emp_ID,
+    #             'department':department,
+    #             'date':date,
+                
+    #         }
+            
+    #         return render(request,'approvalStatus.html',con)
+    
+    # return render(request,'approvalStatus.html')
+
+def employeelogout(request):
+    try:
+      del request.session['Name']
+    except:
+      pass
+    return render(request,"employeeLogin.html")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+leavebaskets = Addemployee.objects.filter(Emp_ID=Emp_ID)
+        
+        leave = Addemployee.objects.all().filter(Emp_ID=Emp_ID).values_list('Total_Paid_Leave','Total_Sick_Leave','Total_HalfDay_Leave','Total_Unpaid_Leave')
+        print(leave)
+    
+        for Paid_leave_days in Leave_App.objects.all().filter(Emp_ID=Emp_ID,id=id,Category='Paid Leave').values('Leave_count_Category'):
+            print(Paid_leave_days)
+
+
+        Paid_leave1 = list(Paid_leave_days.values())
+        print(Paid_leave1)
+        
+        for i in range(len(Paid_leave1)):
+            print(Paid_leave1[i])
+            
+        pending_Paid_leave = int(leave[0][0])-int(Paid_leave1[i])
+        print(pending_Paid_leave)
+        
+        q = Leave_App.objects.get(Emp_ID=Emp_ID,id=id,Category='Paid Leave')
+        q.Pending_Paid_Leave = pending_Paid_leave
+        q.save()
+        print(q)
+        
+        Sick_leave_days = Leave_App.objects.all().filter(Emp_ID=Emp_ID,Category='Sick Leave').values('Leave_count_Category')
+
+        Sick_leave1 = Sick_leave_days[0]
+        for i in Sick_leave1:
+            print(Sick_leave1[i])
+
+        Half_Day_leave_days = Leave_App.objects.all().filter(Emp_ID=Emp_ID,Category='Half DayLeave').values('Leave_count_Category')
+
+        Half_Day_leave1 = Half_Day_leave_days[0]
+        for i in Half_Day_leave1:
+            print(Half_Day_leave1[i])
+            
+        Unpaid_leave_days = Leave_App.objects.all().filter(Emp_ID=Emp_ID,Category='Unpaid Leave').values('Leave_count_Category')
+
+        Unpaid_leave1 = Unpaid_leave_days[0]
+        for i in Unpaid_leave1:
+            print(Unpaid_leave1[i])
+
+
+        pending_Paid_leave = int(leave[0][0])-int(Paid_leave1[i])
+        pending_Sick_leave = int(leave[0][1])-int(Sick_leave1[i])
+        pending_Half_Day_leave = int(leave[0][2])-int(Half_Day_leave1[i])
+        pending_Unpaid_leave = int(leave[0][3])-int(Unpaid_leave1[i])
+
+        print(Paid_leave_days,pending_Sick_leave,pending_Half_Day_leave,pending_Unpaid_leave)
+
+        # ,int(leave[0][1])-1,int(leave[0][2])-1,int(leave[0][3])-1
+
+
+        dic ={
+            'Name':Name,
+            'leavebaskets':leavebaskets,
+            'emp_reg1':emp_reg1,
+            'pending_Paid_leave':pending_Paid_leave,
+            'pending_Sick_leave':pending_Sick_leave,
+            'pending_Half_Day_leave':pending_Half_Day_leave,
+            'pending_Unpaid_leave':pending_Unpaid_leave
+        }

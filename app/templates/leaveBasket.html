@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  {% load static %}
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leave Management System</title>
+    <link rel="stylesheet" href="{% static 'assets/css/leaveBasket.css'%}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.2/font/bootstrap-icons.css">
+    <!-- Bootstrap core CSS     -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+
+
+</head>
+<body>
+
+    <header id="header" class="header fixed-top d-flex align-items-center">
+                        <h3 class="greeting">Hi {{request.session.Name}}!</h3>
+                        <nav class="header-nav " style="padding-left: 60%;">
+                          <ul class="d-flex align-items-center">
+                            <li class="nav-item dropdown">
+                              <a class="nav-link nav-icon" href="#" data-bs-toggle="dropdown">
+                                <i class="bi bi-bell"></i>
+                                <span class="badge bg-primary badge-number">4</span>
+                              </a><!-- End Notification Icon -->
+                    
+                              <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow notifications">
+                                <li class="dropdown-header">
+                                  You have 4 new notifications
+                                  <a href="#"><span class="badge rounded-pill bg-primary p-2 ms-2">View all</span></a>
+                                </li>
+                                <li>
+                                  <hr class="dropdown-divider">
+                                </li>
+                    
+                                <li class="notification-item">
+                                  <i class="bi bi-exclamation-circle text-warning"></i>
+                                  <div>
+                                    <h4>Lorem Ipsum</h4>
+                                    <p>Quae dolorem earum veritatis oditseno</p>
+                                    <p>30 min. ago</p>
+                                  </div>
+                                </li>
+                    
+                                <li>
+                                  <hr class="dropdown-divider">
+                                </li>
+                    
+                                <li class="notification-item">
+                                  <i class="bi bi-x-circle text-danger"></i>
+                                  <div>
+                                    <h4>Atque rerum nesciunt</h4>
+                                    <p>Quae dolorem earum veritatis oditseno</p>
+                                    <p>1 hr. ago</p>
+                                  </div>
+                                </li>
+                    
+                                <li>
+                                  <hr class="dropdown-divider">
+                                </li>
+                    
+                                <li class="notification-item">
+                                  <i class="bi bi-check-circle text-success"></i>
+                                  <div>
+                                    <h4>Sit rerum fuga</h4>
+                                    <p>Quae dolorem earum veritatis oditseno</p>
+                                    <p>2 hrs. ago</p>
+                                  </div>
+                                </li>
+                    
+                                <li>
+                                  <hr class="dropdown-divider">
+                                </li>
+                    
+                                <li class="notification-item">
+                                  <i class="bi bi-info-circle text-primary"></i>
+                                  <div>
+                                    <h4>Dicta reprehenderit</h4>
+                                    <p>Quae dolorem earum veritatis oditseno</p>
+                                    <p>4 hrs. ago</p>
+                                  </div>
+                                </li>
+                    
+                                <li>
+                                  <hr class="dropdown-divider">
+                                </li>
+                                <li class="dropdown-footer">
+                                  <a href="#">Show all notifications</a>
+                                </li>
+                    
+                              </ul><!-- End Notification Dropdown Items -->
+                    
+                            </li><!-- End Notification Nav -->
+                            <li>
+                              <a type="button" href="/employeelogout" class="btn logout"><i class="bi bi-box-arrow-right"></i> Logout</a>
+                            </li>
+                          </ul>
+                        </nav><!-- End Icons Navigation -->
+                    
+    </header>
+    <aside id="sidebar" class="sidebar">
+        <ul class="sidebar-nav" id="sidebar-nav">
+            <div class=" side align-items-left">
+                <div class="logo d-flex align-items-center">
+                  <img src="{% static 'assets/img/Apcosys.png'%}" alt="">
+                  <span class="d-none d-lg-block">Employee Dashboard</span>
+                </div>
+            </div>
+            <div class="profile">
+                <img src="{{emp_reg.Image}}" alt="" class="img-fluid rounded-circle">
+                <h6>{{request.session.Name}}</h6>
+            </div>
+            <nav class="nav-menu" style="padding-top: 10%;">
+                <ul>
+                  <li ><a href="/sidebar"><i class="bi bi-grid"></i><span>Home</span></a></li>
+                  <li class="active"><a href="/leaveSection"><i class="bi bi-clock"></i> <span>Leave Section</span></a></li>
+                  <li><a href="/profileSetting"><i class="bi bi-gear"></i>Profile Settings</a></li>
+        
+                </ul>
+              </nav><!-- .nav-menu -->
+        </ul>
+    </aside>
+    <main id="main" class="main">
+        <section class="section container shadow p-3 mb-5 bg-white rounded dashboard" >
+            <p style="color: #009eff; padding: 2%;">Leave Basket</p>
+            <div class="row">
+              {% comment %} {% for employee in leavebaskets %} {% endcomment %}
+                <div class="col-md-6">
+                    <div class="row">
+                        <div class="basket1">
+                            <a type="button" class="btn btn-primary btn-lg " href="/leaveBasket" >{{emp_reg.Pending_Paid_Leave}}/{{ emp_reg.Total_Paid_Leave }}<br>Paid Leave</a>
+                        </div>
+                        <div class="basket2">
+                            <a type="button" class="btn btn-primary btn-lg " href="/leaveBasket" >{{emp_reg.Pending_Sick_Leave}}/{{ emp_reg.Total_Sick_Leave }}<br>Sick Leave</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="row">   <div class="basket3">
+                        <a type="button" class="btn btn-primary btn-lg " href="/leaveBasket" >{{emp_reg.Pending_HalfDay_Leave}}/{{ emp_reg.Total_HalfDay_Leave }}<br>Half DayLeave</a>
+                      </div> <div class="basket4">
+                        <a type="button" class="btn btn-primary btn-lg " href="/leaveBasket" >{{emp_reg.Pending_Unpaid_Leave}}/{{ emp_reg.Total_Unpaid_Leave }}<br>Unpaid Leave</a>
+                      </div></div>
+                </div>
+                {% comment %} {% endfor %}   {% endcomment %}
+            </div>
+            <div class="row buttons">
+                <div class="col-md-6"></div>
+                <div class="col-md-6" style="padding-bottom: 3%;">
+                    <div class="row" style="margin-top:10%; margin-left: 10%;">
+                      <div class="col-md-3">
+                        <a type="button" class="btn btn-primary btn-lg cancelButton" href = "/leaveSection">Cancel</a>
+                      </div>
+                      <div class="col-md-3" style="margin-left: 13%;">
+                        <a type="button" class="btn btn-primary btn-lg  applyButton" href = "/leaveApplication">Apply</a>
+                      </div>
+                    </div>
+                    
+                  </div>
+            </div>
+            
+           
+          </section>
+          <section id="leaveApplication" style="display: none ;" class="section container shadow p-3 mb-5 bg-white rounded dashboard">
+            <h5 style="color: #009eff; padding: 2%;">Leave Section</h5>
+          </section>
+      
+        </main><!-- End #main -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
+    </script>
+</body>
+</html>

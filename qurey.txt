@@ -1,0 +1,12 @@
+leaves = Leave_App.objects.raw('SELECT * FROM leave FULL OUTER JOIN add_Employee ON leave.id = add_Employee.id')
+            print(leaves)
+            
+            # query = "SELECT leave.Category,leave.From,leave.to,leave.leavedayCategory_From,leave.leavedayCategory_to,leave.Reason,leave.Emp_ID, Addemployee.Name,Addemployee.department FROM AddEmployees INNER JOIN Leave ON AddEmployees.Emp_ID = Leave.Emp_ID;"
+            # SELECT Orders.OrderID, Customers.CustomerName, Orders.OrderDate FROM Orders INNER JOIN Customers ON Orders.CustomerID=Customers.CustomerID;
+            
+            cursor = connection.cursor()    
+            cursor.execute("""SELECT ".Category" as Category,"add_employee.Name" as Name FROM leave FULL OUTER JOIN add_Employee ON leave.id = add_Employee.id""")
+            row = cursor.fetchall()
+            print(row)
+
+            return render(request,'leaveApplicationDetails.html',{'leaves':leaves,'Username':Username})

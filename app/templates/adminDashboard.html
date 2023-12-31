@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  {% load static %}
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leave Management System</title>
+    <link rel="stylesheet" href="{% static 'assets/css/adminDashboard.css'%}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.2/font/bootstrap-icons.css">
+    <!-- Bootstrap core CSS     -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+
+
+</head>
+<body>
+
+    <header id="header" class="header fixed-top d-flex align-items-center" >
+                        <!-- <div class="d-flex align-items-center justify-content-between">
+                          <a href="index.html" class="logo d-flex align-items-center">
+                            <img src="assets/img/Apcosys.png" alt="">
+                            <span class="d-none d-lg-block">Apcosys Private Limited</span>
+                          </a>
+                        </div>End Logo -->
+                        <i class="bi bi-list toggle-sidebar-btn"></i>
+
+                        <h3 class="greeting">Hi {{request.session.Username}}!</h3>
+                        <nav class="header-nav " style="padding-left: 60%;">
+                          <ul class="d-flex align-items-center">
+                            <li class="nav-item dropdown">
+                              <a class="nav-link nav-icon" href="#" data-bs-toggle="dropdown">
+                                <i class="bi bi-bell"></i>
+                                <span class="badge bg-primary badge-number">4</span>
+                              </a><!-- End Notification Icon -->
+                    
+                              <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow notifications">
+                                <li class="dropdown-header">
+                                  You have 4 new notifications
+                                  <a href="#"><span class="badge rounded-pill bg-primary p-2 ms-2">View all</span></a>
+                                </li>
+                                <li>
+                                  <hr class="dropdown-divider">
+                                </li>
+                    
+                                <li class="notification-item">
+                                  <i class="bi bi-exclamation-circle text-warning"></i>
+                                  <div>
+                                    <h4>Lorem Ipsum</h4>
+                                    <p>Quae dolorem earum veritatis oditseno</p>
+                                    <p>30 min. ago</p>
+                                  </div>
+                                </li>
+                    
+                                <li>
+                                  <hr class="dropdown-divider">
+                                </li>
+                    
+                                <li class="notification-item">
+                                  <i class="bi bi-x-circle text-danger"></i>
+                                  <div>
+                                    <h4>Atque rerum nesciunt</h4>
+                                    <p>Quae dolorem earum veritatis oditseno</p>
+                                    <p>1 hr. ago</p>
+                                  </div>
+                                </li>
+                    
+                                <li>
+                                  <hr class="dropdown-divider">
+                                </li>
+                    
+                                <li class="notification-item">
+                                  <i class="bi bi-check-circle text-success"></i>
+                                  <div>
+                                    <h4>Sit rerum fuga</h4>
+                                    <p>Quae dolorem earum veritatis oditseno</p>
+                                    <p>2 hrs. ago</p>
+                                  </div>
+                                </li>
+                    
+                                <li>
+                                  <hr class="dropdown-divider">
+                                </li>
+                    
+                                <li class="notification-item">
+                                  <i class="bi bi-info-circle text-primary"></i>
+                                  <div>
+                                    <h4>Dicta reprehenderit</h4>
+                                    <p>Quae dolorem earum veritatis oditseno</p>
+                                    <p>4 hrs. ago</p>
+                                  </div>
+                                </li>
+                    
+                                <li>
+                                  <hr class="dropdown-divider">
+                                </li>
+                                <li class="dropdown-footer">
+                                  <a href="#">Show all notifications</a>
+                                </li>
+                    
+                              </ul><!-- End Notification Dropdown Items -->
+                    
+                            </li><!-- End Notification Nav -->
+                            <li>
+                              <a type="button" href="/adminlogout" class="btn logout"><i class="bi bi-box-arrow-right"></i> Logout</a>
+                            </li>
+                          </ul>
+                        </nav><!-- End Icons Navigation -->
+                    
+    </header>
+    <aside id="sidebar" class="sidebar" >
+        <ul class="sidebar-nav " id="sidebar-nav">
+            <li class=" side align-items-left"data-bs-toggle="collapse">
+                <div class="logo d-flex align-items-center">
+                  <img src="{% static 'assets/img/Apcosys.png'%}" alt="">
+                  <span class="d-none d-lg-block">Apcosys Private Limited</span>
+                </div>
+              </li>
+            <li class="profile"data-bs-toggle="collapse">
+                <img src="{% static 'assets/img/user.png'%}" alt="" class="img-fluid rounded-circle">
+                <h6>{{request.session.Username}}</h6>
+            </li>
+            <li class="nav-menu" style="padding-top: 10%; "data-bs-toggle="collapse">
+                <ul id="components-nav" class="nav-content "data-bs-parent="#sidebar-nav"  >
+                  <li  class="active"><a href="/adminDashboard"><span>Dashboard</span></a></li>
+                  <li><a href="/leaveApplicationDetails"> <span>Employee Leave Details</span></a></li>
+                  <li><a href="/employees"><span>Employee</span></a></li>
+        
+                </ul>
+            </li><!-- .nav-menu -->
+        </ul>
+    </aside>
+    <main id="main" class="main">
+        <section class="section container shadow p-3 mb-5 bg-white rounded dashboard">
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="card" style = "background-color: #009EFF;  padding-top:10px; padding-bottom:10px;">
+                        <div class="card-body">
+                          <a href="/addEmployee" style="text-decoration: none; color:#ffffff;"><p class="card-text">Register New<br> Employee</p></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card"style = "background-color: #52D89C;">
+                        <div class="card-body">
+                            <p class="card-text">Active Employees</p>
+                            <h5 class="card-title" style="color: #ffffff;">{{total_emp}}</h5>
+                        </div>
+                    </div>
+
+                    
+                </div>
+                <div class="col-md-3">
+                    <div class="card">
+                        <div class="card-body"style = "background-color: #FF7B5D;">
+                          <p class="card-text">Leave Request</p>
+                          <h5 class="card-title" style="color: #ffffff;">{{total_Leave}}</h5>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="col-md-3">
+                    <div class="card"style = "background-color: #FFC14E;">
+                        <div class="card-body">
+                          <p class="card-text">On Leave Today</p>
+                          <h5 class="card-title" style="color: #ffffff;">7</h5>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="row"style="padding-top: 2%; margin:0; margin-right:1.5%">
+                    <div class="card calendar">
+                        <div class="card-body">
+                          <h5 class="card-title" style="color: #009eff;">Holiday Calendar</h5>
+                        </div>
+                    </div>
+            </div>
+          </section>
+      
+        </main><!-- End #main -->
+        <script src="{% static 'assets/js/main.js'%}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
+    </script>
+</body>
+</html>
